@@ -1,0 +1,30 @@
+-- TW MasterData_RegionTw_Production SHA-256: 730d2aea3e7138d0212b64d80d7fe13e2c72ff03086944f3c8d2e325b4b592cc
+-- Add blackjack rules and player-owned rounds; preserve all existing player state.
+CREATE TABLE public.player_blackjack_rounds (
+    player_id TEXT NOT NULL REFERENCES public.players(player_id) ON DELETE CASCADE,
+    unique_id TEXT NOT NULL CHECK (unique_id ~ '^[0-9a-f]{32}$'),
+    game_code BIGINT NOT NULL CHECK (game_code > 0),
+    client_variant TEXT NOT NULL,
+    bet BIGINT NOT NULL CHECK (bet > 0),
+    coin_item_code BIGINT NOT NULL CHECK (coin_item_code > 0),
+    profit_rate NUMERIC NOT NULL CHECK (profit_rate > 0),
+    cards INTEGER[] NOT NULL CHECK (cardinality(cards) = 52),
+    state TEXT NOT NULL DEFAULT 'active' CHECK (state IN ('active','settled','abandoned')),
+    settlement_action TEXT CHECK (settlement_action IN ('result','double')),
+    hit_num INTEGER CHECK (hit_num BETWEEN 0 AND 48),
+    result INTEGER CHECK (result IN (1,2,3)),
+    payout BIGINT CHECK (payout >= 0),
+    created_at BIGINT NOT NULL CHECK (created_at >= 0),
+    finished_at BIGINT CHECK (finished_at >= 0),
+    PRIMARY KEY (player_id,unique_id),
+    CHECK ((state = 'settled' AND settlement_action IS NOT NULL AND hit_num IS NOT NULL
+            AND result IS NOT NULL AND payout IS NOT NULL AND finished_at IS NOT NULL)
+        OR (state <> 'settled' AND settlement_action IS NULL AND hit_num IS NULL
+            AND result IS NULL AND payout IS NULL))
+);
+CREATE UNIQUE INDEX player_blackjack_one_active_round
+    ON public.player_blackjack_rounds(player_id) WHERE state='active';
+INSERT INTO public.game_time_definitions(name,data) VALUES ('mini_game_master', $master$[{"Code":10006,"MiniGameType":0,"IsNotEvent":false,"EventCode":10006,"ScheduleCode":"","CoinItemCode":922000016,"MiniGameIconCode":10006,"TitleBackgroundCode":null,"SelectionScreenBackgroundCode":null},{"Code":10007,"MiniGameType":0,"IsNotEvent":true,"EventCode":0,"ScheduleCode":"19001007","CoinItemCode":922000039,"MiniGameIconCode":10016,"TitleBackgroundCode":null,"SelectionScreenBackgroundCode":null},{"Code":10018,"MiniGameType":1,"IsNotEvent":false,"EventCode":10018,"ScheduleCode":"","CoinItemCode":0,"MiniGameIconCode":10018,"TitleBackgroundCode":2003017,"SelectionScreenBackgroundCode":1001900},{"Code":10023,"MiniGameType":2,"IsNotEvent":false,"EventCode":10023,"ScheduleCode":"","CoinItemCode":922000023,"MiniGameIconCode":10023,"TitleBackgroundCode":1901001,"SelectionScreenBackgroundCode":1004412},{"Code":10032,"MiniGameType":0,"IsNotEvent":false,"EventCode":10032,"ScheduleCode":"","CoinItemCode":922000017,"MiniGameIconCode":10016,"TitleBackgroundCode":null,"SelectionScreenBackgroundCode":null},{"Code":10033,"MiniGameType":1,"IsNotEvent":false,"EventCode":10033,"ScheduleCode":"","CoinItemCode":0,"MiniGameIconCode":10033,"TitleBackgroundCode":2003017,"SelectionScreenBackgroundCode":1001900},{"Code":10036,"MiniGameType":2,"IsNotEvent":false,"EventCode":10036,"ScheduleCode":"","CoinItemCode":922000024,"MiniGameIconCode":10036,"TitleBackgroundCode":1901001,"SelectionScreenBackgroundCode":1010900},{"Code":10038,"MiniGameType":3,"IsNotEvent":false,"EventCode":10038,"ScheduleCode":"","CoinItemCode":0,"MiniGameIconCode":10038,"TitleBackgroundCode":null,"SelectionScreenBackgroundCode":9900000},{"Code":10045,"MiniGameType":4,"IsNotEvent":false,"EventCode":10045,"ScheduleCode":"","CoinItemCode":0,"MiniGameIconCode":10045,"TitleBackgroundCode":null,"SelectionScreenBackgroundCode":1001500},{"Code":25210,"MiniGameType":2,"IsNotEvent":true,"EventCode":0,"ScheduleCode":"10016504","CoinItemCode":924000055,"MiniGameIconCode":10036,"TitleBackgroundCode":1901001,"SelectionScreenBackgroundCode":1004412},{"Code":25220,"MiniGameType":0,"IsNotEvent":true,"EventCode":0,"ScheduleCode":"10017701","CoinItemCode":922000018,"MiniGameIconCode":10016,"TitleBackgroundCode":null,"SelectionScreenBackgroundCode":null}]$master$::jsonb) ON CONFLICT(name) DO UPDATE SET data=EXCLUDED.data;
+INSERT INTO public.game_time_definitions(name,data) VALUES ('blackjack_event_master', $master$[{"Code":10006,"ShopCode":5017,"Name":"賭場活動","BannerCode":60001,"ScheduleCodeBefore":"1000601","ScheduleCodeInSession":"1000602","ScheduleCodeEnd":"1000603","BossCostItemCode":341000106,"BackgroundImgId":0,"BgmCueName":"45_home_bunny","IsClose":false,"StoryIconCode":10006,"QuestIconCode":10006,"BossIconCode":10006,"BossClosedIconCode":90000,"BonusCharacterCode":1003061,"PromotionId":1006,"TransitionIntroName":"","ChapterCode":0,"NormalChapterCode":400006,"MissionGroupCode":0,"HasDamageRanking":false,"BoxLotteryCode":0,"DisplayOrder":0,"HasFreeChallenge":false},{"Code":10032,"ShopCode":5122,"Name":"兔女郎2025活動","BannerCode":320001,"ScheduleCodeBefore":"1003201","ScheduleCodeInSession":"1003202","ScheduleCodeEnd":"1003203","BossCostItemCode":341000132,"BackgroundImgId":0,"BgmCueName":"45_home_bunny","IsClose":false,"StoryIconCode":10032,"QuestIconCode":10032,"BossIconCode":10032,"BossClosedIconCode":90000,"BonusCharacterCode":1002131,"PromotionId":1032,"TransitionIntroName":"","ChapterCode":0,"NormalChapterCode":400030,"MissionGroupCode":0,"HasDamageRanking":true,"BoxLotteryCode":0,"DisplayOrder":0,"HasFreeChallenge":false}]$master$::jsonb) ON CONFLICT(name) DO UPDATE SET data=EXCLUDED.data;
+INSERT INTO public.game_time_definitions(name,data) VALUES ('blackjack_schedule_master', $master$[{"Code":"1000602","StartAt":[{"unix":1715249700},540],"EndAt":[{"unix":1715853599},540],"Type":0,"Values":[]},{"Code":"10017701","StartAt":[{"unix":1790244900},540],"EndAt":[{"unix":1792663199},540],"Type":0,"Values":[]},{"Code":"1003202","StartAt":[{"unix":1744894800},540],"EndAt":[{"unix":1746698399},540],"Type":0,"Values":[]},{"Code":"19001007","StartAt":[{"unix":1770891300},540],"EndAt":[{"unix":1772110799},540],"Type":0,"Values":[]}]$master$::jsonb) ON CONFLICT(name) DO UPDATE SET data=EXCLUDED.data;
+INSERT INTO public.game_time_definitions(name,data) VALUES ('blackjack_settings', $master$[{"Key":"BLACKJACK_BET_LIMIT","Value":["1000"]},{"Key":"BLACKJACK_RATE","Value":["1.5"]}]$master$::jsonb) ON CONFLICT(name) DO UPDATE SET data=EXCLUDED.data;

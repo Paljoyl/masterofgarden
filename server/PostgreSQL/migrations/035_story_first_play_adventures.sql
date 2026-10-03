@@ -1,0 +1,3 @@
+-- TW MasterData_RegionTw_Production SHA-256: 730d2aea3e7138d0212b64d80d7fe13e2c72ff03086944f3c8d2e325b4b592cc
+-- Explicit contents introductions; existing player state is untouched.
+INSERT INTO public.game_time_definitions(name,data) VALUES ('story_first_play_adventures', $master$[{"SettingKey":"CLIMBING_FIRST_PLAY_ADV_CODE","AdventureCode":700027},{"SettingKey":"DUEL_FIRST_PLAY_ADV_CODE","AdventureCode":700003},{"SettingKey":"GARDEN_FIRST_PLAY_ADV_CODE","AdventureCode":700004},{"SettingKey":"GUILD_BATTLE_FIRST_PLAY_ADV_CODE","AdventureCode":700001},{"SettingKey":"TOWER_FIRST_PLAY_ADV_CODE","AdventureCode":700002}]$master$::jsonb) ON CONFLICT(name) DO UPDATE SET data=EXCLUDED.data;

@@ -1,0 +1,26 @@
+{
+  "listen": {
+    "host": "127.0.0.1",
+    "port": 18180
+  },
+  "upstream": "https://tw-prd-green-api.shadow-garden-mog.tw",
+  "api_hosts": [
+    "tw-prd-green-api.shadow-garden-mog.tw"
+  ],
+  "database": {
+    "driver": "postgresql",
+    "host": "127.0.0.1",
+    "port": 5432,
+    "dbname": "MogLocalOpenSource",
+    "user": "postgres",
+    "password_env": "MOG_DB_PASSWORD"
+  },
+  "captures": [],
+  "overrides": "../runtime/overrides",
+  "mode": "local",
+  "timeout_seconds": 20,
+  "upstream_proxy": "direct",
+  "forward_prefixes": [],
+  "routes": {},
+  "max_body_bytes": 67108864
+}

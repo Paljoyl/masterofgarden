@@ -1,0 +1,2 @@
+# Proposed release binding; license and dependency versions require release review.
+PySide6>=6.6,<7

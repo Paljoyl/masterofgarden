@@ -1,0 +1,30 @@
+MasterofGarden project licensing
+
+SPDX-License-Identifier: MIT OR GPL-3.0-only
+Copyright (c) 2026 MasterofGarden contributors
+
+Original code and documentation authored for this project, and contributions
+whose authors have granted these terms, are available at your option under
+either of the following licenses:
+
+  * MIT License: see LICENSE-MIT.
+  * GNU General Public License, version 3 only: see LICENSE-GPL-3.0.
+
+You may choose either license for the covered material. The GPL option refers
+to version 3 only; the example application instructions in the standard GPL
+text do not extend this project's grant to later GPL versions.
+
+Existing copyright notices remain in force. This grant applies only to material
+the contributors are entitled to license. Third-party code and dependencies
+retain their own licenses; this grant does not relicense those components or
+remove the obligations of distributing a combined work with them.
+
+Game clients, GameAssembly.dll and other proprietary binaries, game artwork
+(including launcher/favicon.ico and launcher/图标.png), trademarks, audio/video,
+game-derived protocol definitions and master-data records are outside this
+grant. Their original rights remain with their respective holders. Including
+or referring to such material does not establish permission to redistribute it.
+
+See ../docs/THIRD_PARTY_NOTICES.md for dependency notices, scope, and distribution
+considerations. A release must include this notice and the applicable license
+texts, and comply with the licenses of the components actually distributed.
